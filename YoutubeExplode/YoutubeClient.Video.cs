@@ -33,9 +33,10 @@ namespace YoutubeExplode
             // Parse response as URL-encoded dictionary
             var result = Url.SplitQuery(raw);
 
-            // If video ID is not set - throw
-            if (result.GetValueOrDefault("video_id").IsNullOrWhiteSpace())
-                throw new VideoUnavailableException(videoId, $"Video [{videoId}] is unavailable.");
+            var status = result.GetValueOrDefault("status");
+            //if status not ok throw
+            if (status?.Equals("ok", StringComparison.OrdinalIgnoreCase) != true)
+                throw new VideoUnavailableException(videoId, $"Video [{videoId}] is unavailable. status [{status}]");
 
             return result;
         }
